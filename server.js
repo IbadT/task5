@@ -29,6 +29,16 @@ const options = {
   definition: {
       openapi: '3.0.0'
   },
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "name": "Authorization"
+      }
+    },
+  },
   apis: ["./routes/*.js"]
 }
 
@@ -45,7 +55,6 @@ db();
 app.use('/api', routes);
 
 app.listen(PORT, console.log('Server is started...'));
-// app.listen(PORT);
 
 module.exports = app;
 

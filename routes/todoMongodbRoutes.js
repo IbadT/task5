@@ -75,7 +75,7 @@ router.get('/getById/:id', async (req, res) => {
         const todo = await TodoMongodbControllers.getTodoById(id);
         res.send(todo);
 
-    } catch(err) {
+    } catch(error) {
         res.json(error);
         Sentry.captureException(error);
     }

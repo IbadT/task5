@@ -42,6 +42,21 @@ function validation(req, res, next) {
 }
 
 
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ */
+
+
+// {
+//     "login": "ibadt",
+//     "password": "12345678"
+//   }
+
 
 
 
@@ -52,6 +67,8 @@ function validation(req, res, next) {
  *     summary: Get all todos
  *     description: Return all todos from DB
  *     tags: [Mongoose todos]
+ *     security: 
+ *       - basicAuth: []
  *     responses:
  *       '200':
  *         description: Seccessfull response

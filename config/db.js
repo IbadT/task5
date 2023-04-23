@@ -1,11 +1,12 @@
+require('dotenv').config();
 const { MongoClient } = require('mongodb');
-const client = new MongoClient(process.env.URL);
+const client = new MongoClient(process.env.URL2);
 
 
 async function getConnectionMongoClient() {
     
     // correct
-    return MongoClient.connect(process.env.URL, {
+    return MongoClient.connect(process.env.URL2, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     }).then(client)
@@ -29,10 +30,6 @@ async function useDefaultDb(client) {
     return db;
 }
 
-module.exports = {
-    getConnectionMongoClient,
-    useDefaultDb
-}
 
 
 
@@ -44,7 +41,7 @@ module.exports = {
 // mongoose
 
 const mongoose = require('mongoose');
-const URL = process.env.URL;
+const URL = process.env.URL1;
 
 const db = async () => {
     mongoose.connect(URL)
