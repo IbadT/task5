@@ -25,21 +25,27 @@ app.use(cors());
 const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
-const options = {
-  definition: {
-      openapi: '3.0.0'
-  },
-  components: {
-    securitySchemes: {
-      bearerAuth: {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT",
-        "name": "Authorization"
-      }
-    },
-  },
-  apis: ["./routes/*.js"]
+const options = { 
+  definition: { 
+    openapi: '3.0.0', 
+    info: { 
+      title: "Users API", 
+      description: "API for getting, creating and updating users and their todo tasks", 
+      servers: ["http://localhost:3000"], 
+      version: "1.0.0" 
+    }, 
+    components: { 
+      securitySchemes: { 
+        bearerAuth: { 
+          type: 'http', 
+          name: 'Authorization', 
+          scheme: 'bearer', 
+          bearerFormat: "JWT", 
+        }, 
+      }, 
+    }, 
+  }, 
+  apis: ["./routes/*.js"] 
 }
 
 const swaggerDocs = swaggerJsDoc(options);
