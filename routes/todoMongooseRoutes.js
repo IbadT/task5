@@ -27,6 +27,9 @@ const checkSch = {
 
 function validation(req, res, next) {
     try {
+
+        // req.headers.authorization = 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6IkliYWRUb2ZmIiwicGFzc3dvcmQiOiIxMjM0NTYiLCJpYXQiOjE2ODIwMjY1NzV9.ZTNdv_oZFTgOPJyENgE7Din4RXXuIP4bbLGDkbjp6bk'
+
         const authToken = req.headers.authorization;
         const token = authToken && authToken.split(' ')[1];
         if(token === null) res.sendStatus(401);
@@ -42,6 +45,14 @@ function validation(req, res, next) {
 }
 
 
+
+
+// {
+//     "login": "ibadt",
+//     "password": "12345678"
+//   }
+
+
 /**
  * @swagger
  * components:
@@ -52,14 +63,6 @@ function validation(req, res, next) {
  */
 
 
-// {
-//     "login": "ibadt",
-//     "password": "12345678"
-//   }
-
-
-
-
 /**
  * @swagger
  * /api/mongoose/todo/:
@@ -67,8 +70,8 @@ function validation(req, res, next) {
  *     summary: Get all todos
  *     description: Return all todos from DB
  *     tags: [Mongoose todos]
- *     security: 
- *       - basicAuth: []
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       '200':
  *         description: Seccessfull response
