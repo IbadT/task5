@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
 const Sentry = require('@sentry/node');
 const TodoMongodbControllers = require('../controllers/TodoMongodbControllers.js');
 
@@ -20,7 +21,31 @@ const checkSch = {
 }
 
 
+
+function validation(req, res, next) {
+    try {
+
+        const authToken = req.headers.authorization;
+        const token = authToken && authToken.split(' ')[1];
+        if(token === null) res.sendStatus(401);
+        jwt.verify(token, process.env.ACCESS_TOKEN, (err, data) => {
+            if(err) throw new Error('invalid token');
+            req.user = data;
+            next();
+        })
+    } catch (error) {
+        res.json(error);
+        res.sendStatus(403);
+    }
+}
+
+
+
+
 // mongoDB atlas
+
+
+
 
 
 
@@ -32,12 +57,15 @@ const checkSch = {
  *     summary: Get all todos
  *     description: Return all todos from DB
  *     tags: [MongoDB todos]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       '200':
  *         description: Seccessfull response
  */
 
-router.get('/', async (req, res) => {
+
+router.get('/', validation, async (req, res) => {
     try {
 
         const todos = await TodoMongodbControllers.getAllTodo();
@@ -54,21 +82,27 @@ router.get('/', async (req, res) => {
 /**
  * @swagger
  * /api/mongodb/todo/getById/{id}:
- *    get:
- *      summary: Get user with {id}
- *      tags: [MongoDB todos]
- *      parameters:
- *        - in: path
- *          name: id
- *          required: true
- *          description: id of todo
- *          type: string
- *      responses:
- *          '200':
- *              description: Successfull response
+ *   get:
+ *     summary: Get user with {id}
+ *     tags: [MongoDB todos]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: id of todo
+ *         type: string
+ *     responses:
+ *       '200':
+ *         description: Successfull response
  */
 
-router.get('/getById/:id', async (req, res) => {
+
+
+
+
+router.get('/getById/:id', validation, async (req, res) => {
     try {
 
         const { id } = req.params;
@@ -89,6 +123,8 @@ router.get('/getById/:id', async (req, res) => {
  *   post:
  *     summary: Create todo
  *     tags: [MongoDB todos]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -105,7 +141,7 @@ router.get('/getById/:id', async (req, res) => {
  */ 
 
 
-router.post('/addTodo', checkSchema(checkSch), async (req, res) => {
+router.post('/addTodo', validation, checkSchema(checkSch), async (req, res) => {
     try {
 
         const { body } = req;
@@ -121,12 +157,18 @@ router.post('/addTodo', checkSchema(checkSch), async (req, res) => {
 
 
 
+
+
+
+
 /**
  * @swagger
  * /api/mongodb/todo/editTodo/{id}:
  *  put:
  *      summary: Edites todo with {id}
  *      tags: [MongoDB todos]
+ *      security:
+ *        - bearerAuth: []
  *      parameters:
  *        - in: path
  *          name: id
@@ -148,7 +190,7 @@ router.post('/addTodo', checkSchema(checkSch), async (req, res) => {
  *            description: Todo is not defined
  */
 
-router.put('/editTodo/:id', async (req, res) => {
+router.put('/editTodo/:id', validation, async (req, res) => {
     try {
 
         const { id } = req.params;
@@ -167,31 +209,33 @@ router.put('/editTodo/:id', async (req, res) => {
 /**
  * @swagger
  * /api/mongodb/todo/updateTodo/{id}:
- *  patch:
- *      summary: Updates todo with {id}
- *      tags: [MongoDB todos]
- *      parameters:
- *        - in: path
- *          name: id
- *          required: true
- *          description: Set an {id} of a module to update
- *          type: string
- *      requestBody:
- *        required: true
- *        content:
- *          application/json:
- *            schema:
- *              properties:
- *                title:
- *                  type: string
- *      responses:
- *          '200':
- *            description: Successfull response
- *          '400':
- *            description: Todo is not defined
+ *   patch:
+ *     summary: Updates todo with {id}
+ *     tags: [MongoDB todos]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Set an {id} of a module to update
+ *         type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             properties:
+ *               title:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: Successfull response
+ *       '400':
+ *         description: Todo is not defined
  */
 
-router.patch('/updateTodo/:id', async (req, res) => {
+router.patch('/updateTodo/:id', validation, async (req, res) => {
     try {
 
         const { id } = req.params;
@@ -212,6 +256,8 @@ router.patch('/updateTodo/:id', async (req, res) => {
  *   delete:
  *     summary: Delete module with {id}
  *     tags: [MongoDB todos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -223,7 +269,7 @@ router.patch('/updateTodo/:id', async (req, res) => {
  *             description: Successfull response
  */
 
-router.delete('/deleteTodo/:id', async (req, res) => {
+router.delete('/deleteTodo/:id', validation, async (req, res) => {
     try {
 
         const { id } = req.params;

@@ -28,8 +28,6 @@ const checkSch = {
 function validation(req, res, next) {
     try {
 
-        // req.headers.authorization = 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6IkliYWRUb2ZmIiwicGFzc3dvcmQiOiIxMjM0NTYiLCJpYXQiOjE2ODIwMjY1NzV9.ZTNdv_oZFTgOPJyENgE7Din4RXXuIP4bbLGDkbjp6bk'
-
         const authToken = req.headers.authorization;
         const token = authToken && authToken.split(' ')[1];
         if(token === null) res.sendStatus(401);
@@ -96,6 +94,8 @@ router.get('/', validation, async (req, res) => {
  *    get:
  *      summary: Get user with {id}
  *      tags: [Mongoose todos]
+ *      security:
+ *        - bearerAuth: []
  *      parameters:
  *        - in: path
  *          name: id
@@ -107,7 +107,7 @@ router.get('/', validation, async (req, res) => {
  *              description: Successfull response
  */
 
-router.get('/getById/:id', async (req, res) => {
+router.get('/getById/:id', validation, async (req, res) => {
     try {
 
         const { id } = req.params;
@@ -128,6 +128,8 @@ router.get('/getById/:id', async (req, res) => {
  *   post:
  *     summary: Create Todo
  *     tags: [Mongoose todos]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       description: A JSON object containing pet information
  *       required: true
@@ -145,7 +147,7 @@ router.get('/getById/:id', async (req, res) => {
  *         description: Bad Request
  */
 
-router.post('/addTodo', checkSchema(checkSch), async (req, res) => {
+router.post('/addTodo', validation, checkSchema(checkSch), async (req, res) => {
         try {
 
             validationResult(req).throw();
@@ -166,6 +168,8 @@ router.post('/addTodo', checkSchema(checkSch), async (req, res) => {
  *  put:
  *      summary: Edites todo with {id}
  *      tags: [Mongoose todos]
+ *      security:
+ *        - bearerAuth: []
  *      parameters:
  *        - in: path
  *          name: id
@@ -187,7 +191,7 @@ router.post('/addTodo', checkSchema(checkSch), async (req, res) => {
  *            description: Todo is not defined
  */
 
-router.put('/editTodo/:id', async (req, res) => {
+router.put('/editTodo/:id', validation, async (req, res) => {
     try {
 
         const { id } = req.params;
@@ -207,6 +211,8 @@ router.put('/editTodo/:id', async (req, res) => {
  *  patch:
  *      summary: Updates todo with {id}
  *      tags: [Mongoose todos]
+ *      security:
+ *        - bearerAuth: []
  *      parameters:
  *        - in: path
  *          name: id
@@ -228,7 +234,7 @@ router.put('/editTodo/:id', async (req, res) => {
  *            description: Todo is not defined
  */
 
-router.patch('/updateTodo/:id', async (req, res) => {
+router.patch('/updateTodo/:id', validation, async (req, res) => {
     try {
 
         const { id } = req.params;
@@ -249,6 +255,8 @@ router.patch('/updateTodo/:id', async (req, res) => {
  *   patch:
  *     summary: Change completed todo
  *     tags: [Mongoose todos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path     
  *         name: id
@@ -270,7 +278,7 @@ router.patch('/updateTodo/:id', async (req, res) => {
  *         description: Bad request
  */
 
-router.patch('/changeCompleted/:id', async (req, res) => {
+router.patch('/changeCompleted/:id', validation, async (req, res) => {
     try {
         const { id } = req.params;
         const { isCompleted } = req.body;
@@ -289,6 +297,8 @@ router.patch('/changeCompleted/:id', async (req, res) => {
  *   delete:
  *     summary: Delete module with {id}
  *     tags: [Mongoose todos]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -300,7 +310,7 @@ router.patch('/changeCompleted/:id', async (req, res) => {
  *             description: Successfull response
  */
 
-router.delete('/deleteTodo/:id', async (req, res) => {
+router.delete('/deleteTodo/:id', validation, async (req, res) => {
     try {
 
         const { id } = req.params;
